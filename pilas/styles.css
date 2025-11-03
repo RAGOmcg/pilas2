@@ -1,0 +1,139 @@
+    :root {
+      --bg: #1a102d;
+      --card: #2a1948;
+      --accent: #9d4edd;
+      --muted: #bda8e0;
+      --danger: #ef4444;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: Inter, system-ui, Segoe UI, Roboto, 'Helvetica Neue', Arial;
+    }
+
+    body {
+      margin: 0;
+      background: linear-gradient(180deg, #1a102d 0%, #2a1948 100%);
+      color: #f0eaff;
+      padding: 24px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 22px;
+    }
+
+    p.lead {
+      color: var(--muted);
+      margin: 6px 0 18px;
+    }
+
+    .card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01));
+      padding: 18px;
+      border-radius: 12px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.4);
+    }
+
+    .stack-area {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+    }
+
+    .stack-visual {
+      width: 260px;
+      height: 360px;
+      border-radius: 8px;
+      border: 2px dashed rgba(255, 255, 255, 0.08);
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), transparent);
+      display: flex;
+      flex-direction: column-reverse;
+      align-items: center;
+      padding: 12px;
+      overflow-y: auto;
+    }
+
+    .stack-item {
+      width: 220px;
+      height: 60px;
+      border-radius: 8px;
+      margin: 6px 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(157, 78, 221, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: white;
+      font-weight: bold;
+      transition: all 0.3s ease;
+    }
+
+    .stack-item.top {
+      outline: 3px solid rgba(157, 78, 221, 0.3);
+      box-shadow: 0 0 15px rgba(157, 78, 221, 0.3);
+    }
+
+    .controls {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 8px;
+    }
+
+    .controls input {
+      width: 100%;
+      padding: 8px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.15);
+      background: transparent;
+      color: white;
+    }
+
+    .row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      cursor: pointer;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 0;
+      background: var(--accent);
+      color: #fff;
+      font-weight: 600;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #b572f5;
+    }
+
+    .msg {
+      padding: 10px;
+      border-radius: 8px;
+      margin-top: 10px;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    .msg.ok {
+      background: rgba(157, 78, 221, 0.1);
+      border: 1px solid rgba(157, 78, 221, 0.3);
+      color: var(--accent);
+    }
+
+    .msg.err {
+      background: rgba(239, 68, 68, 0.08);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: var(--danger);
+    }
