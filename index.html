@@ -7,16 +7,17 @@
 <style>
   body {
     font-family: 'Poppins', sans-serif;
-    background: linear-gradient(135deg, #1a002d, #3a0ca3);
-    color: #fff;
+    background: linear-gradient(135deg, #2b0057, #6a0dad, #b5179e);
+    color: #f8e8ff;
     text-align: center;
     padding: 30px;
+    min-height: 100vh;
   }
 
   h1 {
-    color: #c77dff;
+    color: #d4aaff;
     margin-bottom: 40px;
-    text-shadow: 0 0 10px #c77dff;
+    text-shadow: 0 0 12px #d4aaff, 0 0 20px #9d4edd;
   }
 
   .container {
@@ -27,23 +28,24 @@
   }
 
   .queue-card {
-    background: rgba(40, 0, 77, 0.8);
+    background: rgba(70, 0, 140, 0.3);
     border-radius: 20px;
-    box-shadow: 0 0 25px rgba(187, 134, 252, 0.4);
+    box-shadow: 0 0 30px rgba(180, 100, 255, 0.4);
     padding: 20px;
     width: 320px;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    backdrop-filter: blur(6px);
   }
 
   .queue-card:hover {
-    transform: scale(1.04);
-    box-shadow: 0 0 35px rgba(200, 150, 255, 0.6);
+    transform: scale(1.05);
+    box-shadow: 0 0 40px rgba(225, 180, 255, 0.6);
   }
 
   h2 {
-    color: #e0aaff;
+    color: #f3c4ff;
     margin-bottom: 20px;
-    text-shadow: 0 0 8px #e0aaff;
+    text-shadow: 0 0 10px #f3c4ff;
   }
 
   .queue-container {
@@ -57,7 +59,7 @@
   .queue-element {
     width: 55px;
     height: 55px;
-    border-radius: 10px;
+    border-radius: 12px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -66,27 +68,27 @@
     transition: all 0.3s;
   }
 
-  /* Colores por tipo (todos morados pero con tonos distintos) */
+  /* Colores por tipo de cola (variaciones moradas) */
   .simple .queue-element {
-    background: #5a189a44;
-    border: 2px solid #9d4edd;
+    background: rgba(124, 40, 190, 0.4);
+    border: 2px solid #bb86fc;
   }
 
   .circular .queue-element {
-    background: #7b2cbf44;
-    border: 2px solid #c77dff;
-  }
-
-  .doble .queue-element {
-    background: #9d4edd33;
+    background: rgba(165, 70, 255, 0.35);
     border: 2px solid #e0aaff;
   }
 
+  .doble .queue-element {
+    background: rgba(195, 125, 255, 0.3);
+    border: 2px solid #f3c4ff;
+  }
+
   .active {
-    transform: scale(1.2);
-    background: #c77dff !important;
-    color: #1a002d !important;
-    box-shadow: 0 0 15px #c77dff;
+    transform: scale(1.25);
+    background: #d0a2ff !important;
+    color: #2b0057 !important;
+    box-shadow: 0 0 20px #e0aaff;
   }
 
   .controls {
@@ -97,35 +99,41 @@
   }
 
   button {
-    background: #c77dff;
+    background: linear-gradient(90deg, #b5179e, #7209b7);
     border: none;
     border-radius: 8px;
-    color: #1a002d;
+    color: #fff;
     font-weight: bold;
     padding: 8px;
     cursor: pointer;
-    transition: background 0.3s, transform 0.2s;
+    transition: background 0.3s, transform 0.2s, box-shadow 0.2s;
   }
 
   button:hover {
-    background: #9d4edd;
+    background: linear-gradient(90deg, #9d4edd, #c77dff);
     transform: scale(1.05);
+    box-shadow: 0 0 12px #c77dff;
   }
 
   input {
     border-radius: 6px;
-    border: none;
+    border: 2px solid #c77dff;
+    background: rgba(255, 255, 255, 0.15);
     padding: 8px;
     text-align: center;
     font-weight: bold;
     outline: none;
-    color: #5a189a;
+    color: #fff;
+  }
+
+  input::placeholder {
+    color: #e0aaff;
   }
 
   .msg {
     font-size: 0.9em;
     margin-top: 8px;
-    color: #e0aaff;
+    color: #f3c4ff;
     min-height: 18px;
   }
 </style>
@@ -182,7 +190,6 @@
   </div>
 
 <script>
-  // ======== COLA SIMPLE ========
   const size = 5;
   let simpleQueue = [];
   const simpleCont = document.getElementById('queueSimple');
@@ -235,7 +242,7 @@
     renderSimple();
   }
 
-  // ======== COLA CIRCULAR ========
+  // COLA CIRCULAR
   let circQueue = new Array(size).fill(null);
   let front = -1, rear = -1;
   const circCont = document.getElementById('queueCircular');
@@ -256,10 +263,8 @@
     if (!v) return msgCirc.textContent = 'Ingresa un valor';
     if ((front === 0 && rear === size - 1) || (rear + 1) % size === front)
       return msgCirc.textContent = '⚠️ Cola llena';
-
     if (front === -1) front = rear = 0;
     else rear = (rear + 1) % size;
-
     circQueue[rear] = v;
     msgCirc.textContent = `Enqueued ${v}`;
     renderCircular();
@@ -269,10 +274,8 @@
     if (front === -1) return msgCirc.textContent = '⚠️ Cola vacía';
     const val = circQueue[front];
     circQueue[front] = null;
-
     if (front === rear) front = rear = -1;
     else front = (front + 1) % size;
-
     msgCirc.textContent = `Dequeued ${val}`;
     renderCircular();
   }
@@ -283,12 +286,8 @@
     let i = front, delay = 0;
     while (true) {
       const idx = i;
-      setTimeout(() => {
-        circCont.children[idx].classList.add('active');
-      }, delay);
-      setTimeout(() => {
-        circCont.children[idx].classList.remove('active');
-      }, delay + 600);
+      setTimeout(() => circCont.children[idx].classList.add('active'), delay);
+      setTimeout(() => circCont.children[idx].classList.remove('active'), delay + 600);
       if (i === rear) break;
       i = (i + 1) % size;
       delay += 700;
@@ -302,7 +301,7 @@
     renderCircular();
   }
 
-  // ======== COLA DOBLE ========
+  // COLA DOBLE
   let dobleQueue = [];
   const dobleCont = document.getElementById('queueDoble');
   const msgDoble = document.getElementById('msgDoble');
@@ -354,12 +353,8 @@
     msgDoble.textContent = 'Iterando...';
     let delay = 0;
     dobleQueue.forEach((_, i) => {
-      setTimeout(() => {
-        dobleCont.children[i].classList.add('active');
-      }, delay);
-      setTimeout(() => {
-        dobleCont.children[i].classList.remove('active');
-      }, delay + 600);
+      setTimeout(() => dobleCont.children[i].classList.add('active'), delay);
+      setTimeout(() => dobleCont.children[i].classList.remove('active'), delay + 600);
       delay += 700;
     });
   }
@@ -370,7 +365,6 @@
     renderDoble();
   }
 
-  // Render inicial
   renderSimple();
   renderCircular();
   renderDoble();
