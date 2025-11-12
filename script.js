@@ -1,3 +1,4 @@
+// -------------------- Pila --------------------
 class Pila {
   constructor(capacidad = 5) {
     this.elementos = [];
@@ -5,30 +6,25 @@ class Pila {
   }
 
   push(valor) {
-    if (this.elementos.length >= this.capacidad) {
+    if (this.elementos.length >= this.capacidad)
       throw new Error("Desbordamiento: la pila está llena");
-    }
     this.elementos.push(valor);
   }
 
   pop() {
-    if (this.elementos.length === 0) {
+    if (this.elementos.length === 0)
       throw new Error("Subdesbordamiento: la pila está vacía");
-    }
     return this.elementos.pop();
   }
 
   peek() {
-    if (this.elementos.length === 0) {
+    if (this.elementos.length === 0)
       throw new Error("La pila está vacía");
-    }
     return this.elementos[this.elementos.length - 1];
   }
 
   iterarDesdeTope(callback) {
-    for (let i = this.elementos.length - 1; i >= 0; i--) {
-      callback(this.elementos[i]);
-    }
+    for (let i = this.elementos.length - 1; i >= 0; i--) callback(this.elementos[i]);
   }
 }
 
@@ -76,8 +72,7 @@ document.getElementById("popBtn").addEventListener("click", () => {
 
 document.getElementById("peekBtn").addEventListener("click", () => {
   try {
-    const tope = pila.peek();
-    mostrarMensaje(`Tope actual: ${tope}`);
+    mostrarMensaje(`Tope actual: ${pila.peek()}`);
   } catch (e) {
     mostrarMensaje(e.message, "err");
   }
@@ -98,3 +93,129 @@ capacidadInput.addEventListener("change", () => {
 });
 
 mostrarPila();
+
+// -------------------- Cola --------------------
+class Cola {
+  constructor(capacidad = 5, tipo = "fifo") {
+    this.elementos = [];
+    this.capacidad = capacidad;
+    this.tipo = tipo;
+    this.frente = 0;  
+  }
+
+  enqueue(valor, prioridad = 0) {
+    if (this.elementos.length >= this.capacidad) throw new Error("Desbordamiento: la cola está llena");
+    if (this.tipo === "prioridad") {
+      this.elementos.push({ valor, prioridad });
+      this.elementos.sort((a,b) => b.prioridad - a.prioridad);
+    } else {
+      this.elementos.push(valor);
+    }
+  }
+
+  dequeue() {
+    if (this.elementos.length === 0) throw new Error("Subdesbordamiento: la cola está vacía");
+    if (this.tipo === "circular") {
+      const val = this.elementos[this.frente];
+      this.frente = (this.frente + 1) % this.capacidad;
+      return val;
+    }
+    return this.elementos.shift();
+  }
+
+  front() {
+    if (this.elementos.length === 0) throw new Error("La cola está vacía");
+    if (this.tipo === "circular") return this.elementos[this.frente];
+    if (this.tipo === "prioridad") return this.elementos[0].valor;
+    return this.elementos[0];
+  }
+
+  iterar(callback) {
+    if (this.tipo === "prioridad") this.elementos.forEach(e => callback(e.valor));
+    else this.elementos.forEach(callback);
+  }
+
+  setTipo(tipo) {
+    this.tipo = tipo;
+    this.frente = 0;
+  }
+}
+
+const cola = new Cola();
+const queueVisual = document.getElementById("queueVisual");
+const mensajeQueue = document.getElementById("mensajeQueue");
+const valorQueueInput = document.getElementById("valorQueueInput");
+const capacidadQueueInput = document.getElementById("capacidadQueueInput");
+const tipoQueueSelect = document.getElementById("tipoQueueSelect");
+
+function mostrarCola() {
+  queueVisual.innerHTML = "";
+  cola.elementos.forEach((val,i)=>{
+    const div = document.createElement("div");
+    div.className = "stack-item";
+    if(cola.tipo==="prioridad") div.textContent = `${val.valor} (P:${val.prioridad})`;
+    else div.textContent = val;
+    if(i===0) div.classList.add("top");
+    queueVisual.appendChild(div);
+  });
+}
+
+function mostrarMensajeQueue(texto, tipo="ok") {
+  mensajeQueue.textContent = texto;
+  mensajeQueue.className = "msg " + tipo;
+}
+
+document.getElementById("enqueueBtn").addEventListener("click", () => {
+  try {
+    const valor = valorQueueInput.value || "Elemento";
+    let prioridad = 0;
+    if(cola.tipo==="prioridad") prioridad = parseInt(prompt("Ingresa prioridad numérica:"))||0;
+    cola.enqueue(valor, prioridad);
+    mostrarCola();
+    mostrarMensajeQueue("Elemento agregado correctamente");
+    valorQueueInput.value="";
+  } catch(e) {
+    mostrarMensajeQueue(e.message,"err");
+  }
+});
+
+document.getElementById("dequeueBtn").addEventListener("click", () => {
+  try{
+    const valor = cola.dequeue();
+    mostrarCola();
+    mostrarMensajeQueue(`Elemento eliminado: ${cola.tipo==="prioridad"?valor.valor:valor}`);
+  }catch(e){
+    mostrarMensajeQueue(e.message,"err");
+  }
+});
+
+document.getElementById("frontBtn").addEventListener("click", () => {
+  try{
+    const frente = cola.front();
+    mostrarMensajeQueue(`Frente actual: ${cola.tipo==="prioridad"?frente.valor:frente}`);
+  }catch(e){
+    mostrarMensajeQueue(e.message,"err");
+  }
+});
+
+document.getElementById("iterarQueueBtn").addEventListener("click",()=>{
+  let recorrido=[];
+  cola.iterar(v=>recorrido.push(v));
+  mostrarMensajeQueue("Iterador: "+recorrido.join(", "));
+});
+
+capacidadQueueInput.addEventListener("change",()=>{
+  const nueva = parseInt(capacidadQueueInput.value);
+  if(nueva>0){
+    cola.capacidad = nueva;
+    mostrarMensajeQueue(`Capacidad ajustada a ${nueva}`);
+  }
+});
+
+tipoQueueSelect.addEventListener("change",()=>{
+  cola.setTipo(tipoQueueSelect.value);
+  mostrarMensajeQueue(`Tipo de cola cambiado a ${tipoQueueSelect.value}`);
+  mostrarCola();
+});
+
+mostrarCola();
