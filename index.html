@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Colas — Tema Morado</title>
+<title>Colas — Tema Morado con Iteradores</title>
 <style>
   body {
     font-family: 'Poppins', sans-serif;
@@ -32,7 +32,7 @@
     border-radius: 20px;
     box-shadow: 0 0 30px rgba(180, 100, 255, 0.4);
     padding: 20px;
-    width: 320px;
+    width: 340px;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     backdrop-filter: blur(6px);
   }
@@ -46,6 +46,11 @@
     color: #f3c4ff;
     margin-bottom: 20px;
     text-shadow: 0 0 10px #f3c4ff;
+  }
+
+  .queue-wrapper {
+    position: relative;
+    display: inline-block;
   }
 
   .queue-container {
@@ -68,27 +73,48 @@
     transition: all 0.3s;
   }
 
-  /* Colores por tipo de cola (variaciones moradas) */
-  .simple .queue-element {
-    background: rgba(124, 40, 190, 0.4);
-    border: 2px solid #bb86fc;
-  }
-
-  .circular .queue-element {
-    background: rgba(165, 70, 255, 0.35);
-    border: 2px solid #e0aaff;
-  }
-
-  .doble .queue-element {
-    background: rgba(195, 125, 255, 0.3);
-    border: 2px solid #f3c4ff;
-  }
+  /* Colores morados */
+  .simple .queue-element { background: rgba(124, 40, 190, 0.4); border: 2px solid #bb86fc; }
+  .circular .queue-element { background: rgba(165, 70, 255, 0.35); border: 2px solid #e0aaff; }
+  .doble .queue-element { background: rgba(195, 125, 255, 0.3); border: 2px solid #f3c4ff; }
 
   .active {
     transform: scale(1.25);
     background: #d0a2ff !important;
     color: #2b0057 !important;
     box-shadow: 0 0 20px #e0aaff;
+  }
+
+  .iterador {
+    position: absolute;
+    font-size: 13px;
+    font-weight: bold;
+    text-align: center;
+    transform: translateX(-50%);
+  }
+
+  .frente {
+    color: #3efc7d;
+    top: -35px;
+  }
+
+  .frente::before {
+    content: "▼";
+    display: block;
+    color: #3efc7d;
+    font-size: 18px;
+  }
+
+  .final {
+    color: #ffd23f;
+    bottom: -30px;
+  }
+
+  .final::after {
+    content: "▲";
+    display: block;
+    color: #ffd23f;
+    font-size: 18px;
   }
 
   .controls {
@@ -126,9 +152,7 @@
     color: #fff;
   }
 
-  input::placeholder {
-    color: #e0aaff;
-  }
+  input::placeholder { color: #e0aaff; }
 
   .msg {
     font-size: 0.9em;
@@ -139,235 +163,236 @@
 </style>
 </head>
 <body>
-  <h1>Visualización de Colas 💜</h1>
+<h1>Visualización de Colas 💜</h1>
 
-  <div class="container">
-
-    <!-- Cola Simple -->
-    <div class="queue-card simple">
-      <h2>Cola Simple</h2>
+<div class="container">
+  <!-- Cola Simple -->
+  <div class="queue-card simple">
+    <h2>Cola Simple</h2>
+    <div class="queue-wrapper">
       <div class="queue-container" id="queueSimple"></div>
-      <div class="controls">
-        <input type="text" id="inputSimple" placeholder="Valor" maxlength="2">
-        <button onclick="enqueueSimple()">Enqueue</button>
-        <button onclick="dequeueSimple()">Dequeue</button>
-        <button onclick="iterateSimple()">Iterar</button>
-        <button onclick="resetSimple()">Reset</button>
-      </div>
-      <p class="msg" id="msgSimple"></p>
+      <div id="frenteSimple" class="iterador frente">Frente</div>
+      <div id="finalSimple" class="iterador final">Final</div>
     </div>
-
-    <!-- Cola Circular -->
-    <div class="queue-card circular">
-      <h2>Cola Circular</h2>
-      <div class="queue-container" id="queueCircular"></div>
-      <div class="controls">
-        <input type="text" id="inputCircular" placeholder="Valor" maxlength="2">
-        <button onclick="enqueueCircular()">Enqueue</button>
-        <button onclick="dequeueCircular()">Dequeue</button>
-        <button onclick="iterateCircular()">Iterar</button>
-        <button onclick="resetCircular()">Reset</button>
-      </div>
-      <p class="msg" id="msgCircular"></p>
+    <div class="controls">
+      <input type="text" id="inputSimple" placeholder="Valor" maxlength="2">
+      <button onclick="enqueueSimple()">Enqueue</button>
+      <button onclick="dequeueSimple()">Dequeue</button>
+      <button onclick="iterateSimple()">Iterar</button>
+      <button onclick="resetSimple()">Reset</button>
     </div>
-
-    <!-- Cola Doble -->
-    <div class="queue-card doble">
-      <h2>Cola Doble (Deque)</h2>
-      <div class="queue-container" id="queueDoble"></div>
-      <div class="controls">
-        <input type="text" id="inputDoble" placeholder="Valor" maxlength="2">
-        <button onclick="enqueueFront()">Enqueue Frente</button>
-        <button onclick="enqueueBack()">Enqueue Final</button>
-        <button onclick="dequeueFront()">Dequeue Frente</button>
-        <button onclick="dequeueBack()">Dequeue Final</button>
-        <button onclick="iterateDoble()">Iterar</button>
-        <button onclick="resetDoble()">Reset</button>
-      </div>
-      <p class="msg" id="msgDoble"></p>
-    </div>
-
+    <p class="msg" id="msgSimple"></p>
   </div>
 
+  <!-- Cola Circular -->
+  <div class="queue-card circular">
+    <h2>Cola Circular</h2>
+    <div class="queue-wrapper">
+      <div class="queue-container" id="queueCircular"></div>
+      <div id="frenteCircular" class="iterador frente">Frente</div>
+      <div id="finalCircular" class="iterador final">Final</div>
+    </div>
+    <div class="controls">
+      <input type="text" id="inputCircular" placeholder="Valor" maxlength="2">
+      <button onclick="enqueueCircular()">Enqueue</button>
+      <button onclick="dequeueCircular()">Dequeue</button>
+      <button onclick="iterateCircular()">Iterar</button>
+      <button onclick="resetCircular()">Reset</button>
+    </div>
+    <p class="msg" id="msgCircular"></p>
+  </div>
+
+  <!-- Cola Doble -->
+  <div class="queue-card doble">
+    <h2>Cola Doble (Deque)</h2>
+    <div class="queue-wrapper">
+      <div class="queue-container" id="queueDoble"></div>
+      <div id="frenteDoble" class="iterador frente">Frente</div>
+      <div id="finalDoble" class="iterador final">Final</div>
+    </div>
+    <div class="controls">
+      <input type="text" id="inputDoble" placeholder="Valor" maxlength="2">
+      <button onclick="enqueueFront()">Enqueue Frente</button>
+      <button onclick="enqueueBack()">Enqueue Final</button>
+      <button onclick="dequeueFront()">Dequeue Frente</button>
+      <button onclick="dequeueBack()">Dequeue Final</button>
+      <button onclick="iterateDoble()">Iterar</button>
+      <button onclick="resetDoble()">Reset</button>
+    </div>
+    <p class="msg" id="msgDoble"></p>
+  </div>
+</div>
+
 <script>
-  const size = 5;
-  let simpleQueue = [];
-  const simpleCont = document.getElementById('queueSimple');
-  const msgSimple = document.getElementById('msgSimple');
+const size = 5;
 
-  function renderSimple() {
-    simpleCont.innerHTML = '';
-    simpleQueue.forEach(v => {
-      const div = document.createElement('div');
-      div.className = 'queue-element';
-      div.textContent = v;
-      simpleCont.appendChild(div);
-    });
-  }
+// ===== COLA SIMPLE =====
+let simpleQueue = [];
+const simpleCont = document.getElementById('queueSimple');
+const frenteSimple = document.getElementById('frenteSimple');
+const finalSimple = document.getElementById('finalSimple');
 
-  function enqueueSimple() {
-    const v = document.getElementById('inputSimple').value.trim();
-    if (!v) return msgSimple.textContent = 'Ingresa un valor';
-    if (simpleQueue.length >= size) return msgSimple.textContent = '⚠️ Cola llena';
-    simpleQueue.push(v);
-    msgSimple.textContent = `Enqueued ${v}`;
-    renderSimple();
-  }
+function renderSimple() {
+  simpleCont.innerHTML = '';
+  simpleQueue.forEach(v => {
+    const div = document.createElement('div');
+    div.className = 'queue-element';
+    div.textContent = v;
+    simpleCont.appendChild(div);
+  });
+  updateIteradores(simpleCont, frenteSimple, finalSimple, simpleQueue.length);
+}
 
-  function dequeueSimple() {
-    if (simpleQueue.length === 0) return msgSimple.textContent = '⚠️ Cola vacía';
-    const val = simpleQueue.shift();
-    msgSimple.textContent = `Dequeued ${val}`;
-    renderSimple();
-  }
-
-  function iterateSimple() {
-    if (simpleQueue.length === 0) return msgSimple.textContent = 'Vacía';
-    msgSimple.textContent = 'Iterando...';
-    let delay = 0;
-    simpleQueue.forEach((_, i) => {
-      setTimeout(() => {
-        simpleCont.children[i].classList.add('active');
-      }, delay);
-      setTimeout(() => {
-        simpleCont.children[i].classList.remove('active');
-      }, delay + 600);
-      delay += 700;
-    });
-  }
-
-  function resetSimple() {
-    simpleQueue = [];
-    msgSimple.textContent = 'Reiniciada';
-    renderSimple();
-  }
-
-  // COLA CIRCULAR
-  let circQueue = new Array(size).fill(null);
-  let front = -1, rear = -1;
-  const circCont = document.getElementById('queueCircular');
-  const msgCirc = document.getElementById('msgCircular');
-
-  function renderCircular() {
-    circCont.innerHTML = '';
-    circQueue.forEach(v => {
-      const div = document.createElement('div');
-      div.className = 'queue-element';
-      if (v !== null) div.textContent = v;
-      circCont.appendChild(div);
-    });
-  }
-
-  function enqueueCircular() {
-    const v = document.getElementById('inputCircular').value.trim();
-    if (!v) return msgCirc.textContent = 'Ingresa un valor';
-    if ((front === 0 && rear === size - 1) || (rear + 1) % size === front)
-      return msgCirc.textContent = '⚠️ Cola llena';
-    if (front === -1) front = rear = 0;
-    else rear = (rear + 1) % size;
-    circQueue[rear] = v;
-    msgCirc.textContent = `Enqueued ${v}`;
-    renderCircular();
-  }
-
-  function dequeueCircular() {
-    if (front === -1) return msgCirc.textContent = '⚠️ Cola vacía';
-    const val = circQueue[front];
-    circQueue[front] = null;
-    if (front === rear) front = rear = -1;
-    else front = (front + 1) % size;
-    msgCirc.textContent = `Dequeued ${val}`;
-    renderCircular();
-  }
-
-  function iterateCircular() {
-    if (front === -1) return msgCirc.textContent = 'Vacía';
-    msgCirc.textContent = 'Iterando...';
-    let i = front, delay = 0;
-    while (true) {
-      const idx = i;
-      setTimeout(() => circCont.children[idx].classList.add('active'), delay);
-      setTimeout(() => circCont.children[idx].classList.remove('active'), delay + 600);
-      if (i === rear) break;
-      i = (i + 1) % size;
-      delay += 700;
-    }
-  }
-
-  function resetCircular() {
-    circQueue.fill(null);
-    front = rear = -1;
-    msgCirc.textContent = 'Reiniciada';
-    renderCircular();
-  }
-
-  // COLA DOBLE
-  let dobleQueue = [];
-  const dobleCont = document.getElementById('queueDoble');
-  const msgDoble = document.getElementById('msgDoble');
-
-  function renderDoble() {
-    dobleCont.innerHTML = '';
-    dobleQueue.forEach(v => {
-      const div = document.createElement('div');
-      div.className = 'queue-element';
-      div.textContent = v;
-      dobleCont.appendChild(div);
-    });
-  }
-
-  function enqueueFront() {
-    const v = document.getElementById('inputDoble').value.trim();
-    if (!v) return msgDoble.textContent = 'Ingresa un valor';
-    if (dobleQueue.length >= size) return msgDoble.textContent = '⚠️ Cola llena';
-    dobleQueue.unshift(v);
-    msgDoble.textContent = `Enqueued frente ${v}`;
-    renderDoble();
-  }
-
-  function enqueueBack() {
-    const v = document.getElementById('inputDoble').value.trim();
-    if (!v) return msgDoble.textContent = 'Ingresa un valor';
-    if (dobleQueue.length >= size) return msgDoble.textContent = '⚠️ Cola llena';
-    dobleQueue.push(v);
-    msgDoble.textContent = `Enqueued final ${v}`;
-    renderDoble();
-  }
-
-  function dequeueFront() {
-    if (dobleQueue.length === 0) return msgDoble.textContent = '⚠️ Vacía';
-    const val = dobleQueue.shift();
-    msgDoble.textContent = `Dequeued frente ${val}`;
-    renderDoble();
-  }
-
-  function dequeueBack() {
-    if (dobleQueue.length === 0) return msgDoble.textContent = '⚠️ Vacía';
-    const val = dobleQueue.pop();
-    msgDoble.textContent = `Dequeued final ${val}`;
-    renderDoble();
-  }
-
-  function iterateDoble() {
-    if (dobleQueue.length === 0) return msgDoble.textContent = 'Vacía';
-    msgDoble.textContent = 'Iterando...';
-    let delay = 0;
-    dobleQueue.forEach((_, i) => {
-      setTimeout(() => dobleCont.children[i].classList.add('active'), delay);
-      setTimeout(() => dobleCont.children[i].classList.remove('active'), delay + 600);
-      delay += 700;
-    });
-  }
-
-  function resetDoble() {
-    dobleQueue = [];
-    msgDoble.textContent = 'Reiniciada';
-    renderDoble();
-  }
-
+function enqueueSimple() {
+  const v = document.getElementById('inputSimple').value.trim();
+  if (!v) return;
+  if (simpleQueue.length >= size) return;
+  simpleQueue.push(v);
   renderSimple();
+}
+
+function dequeueSimple() {
+  if (simpleQueue.length === 0) return;
+  simpleQueue.shift();
+  renderSimple();
+}
+
+function iterateSimple() {
+  simpleQueue.forEach((_, i) => {
+    setTimeout(() => simpleCont.children[i].classList.add('active'), i*700);
+    setTimeout(() => simpleCont.children[i].classList.remove('active'), i*700+600);
+  });
+}
+
+function resetSimple() { simpleQueue=[]; renderSimple(); }
+
+// ===== COLA CIRCULAR =====
+let circQueue = new Array(size).fill(null);
+let front=-1, rear=-1;
+const circCont=document.getElementById('queueCircular');
+const frenteCircular=document.getElementById('frenteCircular');
+const finalCircular=document.getElementById('finalCircular');
+
+function renderCircular() {
+  circCont.innerHTML='';
+  circQueue.forEach(v=>{
+    const div=document.createElement('div');
+    div.className='queue-element';
+    if(v!==null) div.textContent=v;
+    circCont.appendChild(div);
+  });
+  if(front!==-1){
+    const elements=circCont.children;
+    frenteCircular.style.display='block';
+    finalCircular.style.display='block';
+    frenteCircular.style.left=elements[front].offsetLeft+elements[front].offsetWidth/2+'px';
+    finalCircular.style.left=elements[rear].offsetLeft+elements[rear].offsetWidth/2+'px';
+  } else {
+    frenteCircular.style.display='none';
+    finalCircular.style.display='none';
+  }
+}
+
+function enqueueCircular(){
+  const v=document.getElementById('inputCircular').value.trim();
+  if(!v)return;
+  if((front===0 && rear===size-1)||(rear+1)%size===front)return;
+  if(front===-1)front=rear=0;
+  else rear=(rear+1)%size;
+  circQueue[rear]=v;
   renderCircular();
+}
+
+function dequeueCircular(){
+  if(front===-1)return;
+  circQueue[front]=null;
+  if(front===rear)front=rear=-1;
+  else front=(front+1)%size;
+  renderCircular();
+}
+
+function iterateCircular(){
+  if(front===-1)return;
+  let i=front,delay=0;
+  while(true){
+    const idx=i;
+    setTimeout(()=>circCont.children[idx].classList.add('active'),delay);
+    setTimeout(()=>circCont.children[idx].classList.remove('active'),delay+600);
+    if(i===rear)break;
+    i=(i+1)%size;
+    delay+=700;
+  }
+}
+
+function resetCircular(){
+  circQueue.fill(null); front=rear=-1; renderCircular();
+}
+
+// ===== COLA DOBLE =====
+let dobleQueue=[];
+const dobleCont=document.getElementById('queueDoble');
+const frenteDoble=document.getElementById('frenteDoble');
+const finalDoble=document.getElementById('finalDoble');
+
+function renderDoble(){
+  dobleCont.innerHTML='';
+  dobleQueue.forEach(v=>{
+    const div=document.createElement('div');
+    div.className='queue-element';
+    div.textContent=v;
+    dobleCont.appendChild(div);
+  });
+  updateIteradores(dobleCont, frenteDoble, finalDoble, dobleQueue.length);
+}
+
+function enqueueFront(){
+  const v=document.getElementById('inputDoble').value.trim();
+  if(!v)return;
+  if(dobleQueue.length>=size)return;
+  dobleQueue.unshift(v);
   renderDoble();
+}
+
+function enqueueBack(){
+  const v=document.getElementById('inputDoble').value.trim();
+  if(!v)return;
+  if(dobleQueue.length>=size)return;
+  dobleQueue.push(v);
+  renderDoble();
+}
+
+function dequeueFront(){
+  if(dobleQueue.length===0)return;
+  dobleQueue.shift(); renderDoble();
+}
+
+function dequeueBack(){
+  if(dobleQueue.length===0)return;
+  dobleQueue.pop(); renderDoble();
+}
+
+function iterateDoble(){
+  dobleQueue.forEach((_,i)=>{
+    setTimeout(()=>dobleCont.children[i].classList.add('active'),i*700);
+    setTimeout(()=>dobleCont.children[i].classList.remove('active'),i*700+600);
+  });
+}
+
+function resetDoble(){dobleQueue=[];renderDoble();}
+
+// ==== FUNCION COMUN PARA MOSTRAR ITERADORES ====
+function updateIteradores(container, frente, final, length){
+  if(length===0){ frente.style.display='none'; final.style.display='none'; return; }
+  const elements=container.children;
+  frente.style.display='block';
+  final.style.display='block';
+  frente.style.left=elements[0].offsetLeft+elements[0].offsetWidth/2+'px';
+  final.style.left=elements[length-1].offsetLeft+elements[length-1].offsetWidth/2+'px';
+}
+
+renderSimple();
+renderCircular();
+renderDoble();
 </script>
 </body>
 </html>
