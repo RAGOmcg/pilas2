@@ -3,14 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pila Interactiva</title>
+  <title>Pila y Cola Interactiva</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <div class="container">
+
+    <!-- Sección Pila -->
     <header>
       <h1>Simulación de Pila (Stack)</h1>
-      <p class="lead">Apila y desapila elementos. Muestra el manejo de errores de desbordamiento y subdesbordamiento.</p>
+      <p class="lead">Apila y desapila elementos. Manejo de errores incluido.</p>
     </header>
 
     <div class="card stack-layout">
@@ -31,9 +33,34 @@
       </div>
     </div>
 
+    <!-- Sección Cola -->
+    <div class="card queue-layout">
+      <div class="queue-area">
+        <h2>Cola Interactiva</h2>
+        <div class="controls">
+          <input id="valorQueueInput" type="text" placeholder="Valor a encolar" />
+          <div class="row">
+            <button id="enqueueBtn">Enqueue (Agregar)</button>
+            <button id="dequeueBtn">Dequeue (Eliminar)</button>
+            <button id="frontBtn">Frente</button>
+          </div>
+          <input id="capacidadQueueInput" type="number" placeholder="Capacidad (ej. 5)" min="1" />
+          <select id="tipoQueueSelect">
+            <option value="fifo">Cola FIFO</option>
+            <option value="circular">Cola Circular</option>
+            <option value="prioridad">Cola de Prioridad</option>
+          </select>
+          <button id="iterarQueueBtn">Iterar Cola</button>
+        </div>
+        <div id="queueVisual" class="stack-visual"></div>
+        <div id="mensajeQueue" class="msg"></div>
+      </div>
+    </div>
+
     <footer>
-      <p>Pila interactiva con manejo de errores y recorrido desde el tope.</p>
+      <p>Pila y Cola interactiva con manejo de errores y recorrido.</p>
     </footer>
+
   </div>
 
   <script src="script.js"></script>
