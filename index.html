@@ -3,19 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Diferentes Tipos de Colas</title>
+<title>Colas — Tema Morado</title>
 <style>
   body {
     font-family: 'Poppins', sans-serif;
-    background: linear-gradient(135deg, #0a0f1c, #1a1f2e);
+    background: linear-gradient(135deg, #1a002d, #3a0ca3);
     color: #fff;
     text-align: center;
     padding: 30px;
   }
 
   h1 {
-    color: #00eaff;
+    color: #c77dff;
     margin-bottom: 40px;
+    text-shadow: 0 0 10px #c77dff;
   }
 
   .container {
@@ -26,21 +27,23 @@
   }
 
   .queue-card {
-    background: #142634;
+    background: rgba(40, 0, 77, 0.8);
     border-radius: 20px;
-    box-shadow: 0 0 20px rgba(0,0,0,0.4);
+    box-shadow: 0 0 25px rgba(187, 134, 252, 0.4);
     padding: 20px;
     width: 320px;
-    transition: transform 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
   }
 
   .queue-card:hover {
-    transform: scale(1.03);
+    transform: scale(1.04);
+    box-shadow: 0 0 35px rgba(200, 150, 255, 0.6);
   }
 
   h2 {
-    color: #ffde59;
+    color: #e0aaff;
     margin-bottom: 20px;
+    text-shadow: 0 0 8px #e0aaff;
   }
 
   .queue-container {
@@ -52,36 +55,38 @@
   }
 
   .queue-element {
-    width: 50px;
-    height: 50px;
-    border-radius: 8px;
+    width: 55px;
+    height: 55px;
+    border-radius: 10px;
     display: flex;
     justify-content: center;
     align-items: center;
     font-weight: bold;
+    color: white;
     transition: all 0.3s;
   }
 
-  /* Colores diferentes por tipo */
+  /* Colores por tipo (todos morados pero con tonos distintos) */
   .simple .queue-element {
-    background: #007bff33;
-    border: 2px solid #007bff;
+    background: #5a189a44;
+    border: 2px solid #9d4edd;
   }
 
   .circular .queue-element {
-    background: #00eaff33;
-    border: 2px solid #00eaff;
+    background: #7b2cbf44;
+    border: 2px solid #c77dff;
   }
 
   .doble .queue-element {
-    background: #ff767533;
-    border: 2px solid #ff7675;
+    background: #9d4edd33;
+    border: 2px solid #e0aaff;
   }
 
   .active {
     transform: scale(1.2);
-    background: #00ff90 !important;
-    color: #000;
+    background: #c77dff !important;
+    color: #1a002d !important;
+    box-shadow: 0 0 15px #c77dff;
   }
 
   .controls {
@@ -92,18 +97,19 @@
   }
 
   button {
-    background: #00eaff;
+    background: #c77dff;
     border: none;
     border-radius: 8px;
-    color: #101820;
+    color: #1a002d;
     font-weight: bold;
     padding: 8px;
     cursor: pointer;
-    transition: background 0.3s;
+    transition: background 0.3s, transform 0.2s;
   }
 
   button:hover {
-    background: #00bcd4;
+    background: #9d4edd;
+    transform: scale(1.05);
   }
 
   input {
@@ -113,19 +119,19 @@
     text-align: center;
     font-weight: bold;
     outline: none;
+    color: #5a189a;
   }
 
   .msg {
     font-size: 0.9em;
     margin-top: 8px;
-    color: #ffde59;
+    color: #e0aaff;
     min-height: 18px;
   }
-
 </style>
 </head>
 <body>
-  <h1>Visualización de Colas (Simples, Circulares y Dobles)</h1>
+  <h1>Visualización de Colas 💜</h1>
 
   <div class="container">
 
@@ -195,14 +201,14 @@
   function enqueueSimple() {
     const v = document.getElementById('inputSimple').value.trim();
     if (!v) return msgSimple.textContent = 'Ingresa un valor';
-    if (simpleQueue.length >= size) return msgSimple.textContent = 'Overflow: cola llena';
+    if (simpleQueue.length >= size) return msgSimple.textContent = '⚠️ Cola llena';
     simpleQueue.push(v);
     msgSimple.textContent = `Enqueued ${v}`;
     renderSimple();
   }
 
   function dequeueSimple() {
-    if (simpleQueue.length === 0) return msgSimple.textContent = 'Underflow: cola vacía';
+    if (simpleQueue.length === 0) return msgSimple.textContent = '⚠️ Cola vacía';
     const val = simpleQueue.shift();
     msgSimple.textContent = `Dequeued ${val}`;
     renderSimple();
@@ -249,7 +255,7 @@
     const v = document.getElementById('inputCircular').value.trim();
     if (!v) return msgCirc.textContent = 'Ingresa un valor';
     if ((front === 0 && rear === size - 1) || (rear + 1) % size === front)
-      return msgCirc.textContent = 'Overflow: llena';
+      return msgCirc.textContent = '⚠️ Cola llena';
 
     if (front === -1) front = rear = 0;
     else rear = (rear + 1) % size;
@@ -260,7 +266,7 @@
   }
 
   function dequeueCircular() {
-    if (front === -1) return msgCirc.textContent = 'Underflow: vacía';
+    if (front === -1) return msgCirc.textContent = '⚠️ Cola vacía';
     const val = circQueue[front];
     circQueue[front] = null;
 
@@ -314,7 +320,7 @@
   function enqueueFront() {
     const v = document.getElementById('inputDoble').value.trim();
     if (!v) return msgDoble.textContent = 'Ingresa un valor';
-    if (dobleQueue.length >= size) return msgDoble.textContent = 'Overflow: llena';
+    if (dobleQueue.length >= size) return msgDoble.textContent = '⚠️ Cola llena';
     dobleQueue.unshift(v);
     msgDoble.textContent = `Enqueued frente ${v}`;
     renderDoble();
@@ -323,21 +329,21 @@
   function enqueueBack() {
     const v = document.getElementById('inputDoble').value.trim();
     if (!v) return msgDoble.textContent = 'Ingresa un valor';
-    if (dobleQueue.length >= size) return msgDoble.textContent = 'Overflow: llena';
+    if (dobleQueue.length >= size) return msgDoble.textContent = '⚠️ Cola llena';
     dobleQueue.push(v);
     msgDoble.textContent = `Enqueued final ${v}`;
     renderDoble();
   }
 
   function dequeueFront() {
-    if (dobleQueue.length === 0) return msgDoble.textContent = 'Vacía';
+    if (dobleQueue.length === 0) return msgDoble.textContent = '⚠️ Vacía';
     const val = dobleQueue.shift();
     msgDoble.textContent = `Dequeued frente ${val}`;
     renderDoble();
   }
 
   function dequeueBack() {
-    if (dobleQueue.length === 0) return msgDoble.textContent = 'Vacía';
+    if (dobleQueue.length === 0) return msgDoble.textContent = '⚠️ Vacía';
     const val = dobleQueue.pop();
     msgDoble.textContent = `Dequeued final ${val}`;
     renderDoble();
