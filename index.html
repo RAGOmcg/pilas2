@@ -1,68 +1,373 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pila y Cola Interactiva</title>
-  <link rel="stylesheet" href="styles.css" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diferentes Tipos de Colas</title>
+<style>
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #0a0f1c, #1a1f2e);
+    color: #fff;
+    text-align: center;
+    padding: 30px;
+  }
+
+  h1 {
+    color: #00eaff;
+    margin-bottom: 40px;
+  }
+
+  .container {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+  }
+
+  .queue-card {
+    background: #142634;
+    border-radius: 20px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.4);
+    padding: 20px;
+    width: 320px;
+    transition: transform 0.3s ease;
+  }
+
+  .queue-card:hover {
+    transform: scale(1.03);
+  }
+
+  h2 {
+    color: #ffde59;
+    margin-bottom: 20px;
+  }
+
+  .queue-container {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+  }
+
+  .queue-element {
+    width: 50px;
+    height: 50px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    transition: all 0.3s;
+  }
+
+  /* Colores diferentes por tipo */
+  .simple .queue-element {
+    background: #007bff33;
+    border: 2px solid #007bff;
+  }
+
+  .circular .queue-element {
+    background: #00eaff33;
+    border: 2px solid #00eaff;
+  }
+
+  .doble .queue-element {
+    background: #ff767533;
+    border: 2px solid #ff7675;
+  }
+
+  .active {
+    transform: scale(1.2);
+    background: #00ff90 !important;
+    color: #000;
+  }
+
+  .controls {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  button {
+    background: #00eaff;
+    border: none;
+    border-radius: 8px;
+    color: #101820;
+    font-weight: bold;
+    padding: 8px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+
+  button:hover {
+    background: #00bcd4;
+  }
+
+  input {
+    border-radius: 6px;
+    border: none;
+    padding: 8px;
+    text-align: center;
+    font-weight: bold;
+    outline: none;
+  }
+
+  .msg {
+    font-size: 0.9em;
+    margin-top: 8px;
+    color: #ffde59;
+    min-height: 18px;
+  }
+
+</style>
 </head>
 <body>
+  <h1>Visualización de Colas (Simples, Circulares y Dobles)</h1>
+
   <div class="container">
 
-    <!-- Sección Pila -->
-    <header>
-      <h1>Simulación de Pila (Stack)</h1>
-      <p class="lead">Apila y desapila elementos. Manejo de errores incluido.</p>
-    </header>
-
-    <div class="card stack-layout">
-      <div class="stack-area">
-        <h2>Pila Interactiva</h2>
-        <div class="controls">
-          <input id="valorInput" type="text" placeholder="Valor a apilar" />
-          <div class="row">
-            <button id="pushBtn">Push (Apilar)</button>
-            <button id="popBtn">Pop (Desapilar)</button>
-            <button id="peekBtn">Tope</button>
-          </div>
-          <input id="capacidadInput" type="number" placeholder="Capacidad (ej. 5)" min="1" />
-          <button id="iterarBtn">Iterar desde Tope</button>
-        </div>
-        <div id="stackVisual" class="stack-visual"></div>
-        <div id="mensaje" class="msg"></div>
+    <!-- Cola Simple -->
+    <div class="queue-card simple">
+      <h2>Cola Simple</h2>
+      <div class="queue-container" id="queueSimple"></div>
+      <div class="controls">
+        <input type="text" id="inputSimple" placeholder="Valor" maxlength="2">
+        <button onclick="enqueueSimple()">Enqueue</button>
+        <button onclick="dequeueSimple()">Dequeue</button>
+        <button onclick="iterateSimple()">Iterar</button>
+        <button onclick="resetSimple()">Reset</button>
       </div>
+      <p class="msg" id="msgSimple"></p>
     </div>
 
-    <!-- Sección Cola -->
-    <div class="card queue-layout">
-      <div class="queue-area">
-        <h2>Cola Interactiva</h2>
-        <div class="controls">
-          <input id="valorQueueInput" type="text" placeholder="Valor a encolar" />
-          <div class="row">
-            <button id="enqueueBtn">Enqueue (Agregar)</button>
-            <button id="dequeueBtn">Dequeue (Eliminar)</button>
-            <button id="frontBtn">Frente</button>
-          </div>
-          <input id="capacidadQueueInput" type="number" placeholder="Capacidad (ej. 5)" min="1" />
-          <select id="tipoQueueSelect">
-            <option value="fifo">Cola FIFO</option>
-            <option value="circular">Cola Circular</option>
-            <option value="prioridad">Cola de Prioridad</option>
-          </select>
-          <button id="iterarQueueBtn">Iterar Cola</button>
-        </div>
-        <div id="queueVisual" class="stack-visual"></div>
-        <div id="mensajeQueue" class="msg"></div>
+    <!-- Cola Circular -->
+    <div class="queue-card circular">
+      <h2>Cola Circular</h2>
+      <div class="queue-container" id="queueCircular"></div>
+      <div class="controls">
+        <input type="text" id="inputCircular" placeholder="Valor" maxlength="2">
+        <button onclick="enqueueCircular()">Enqueue</button>
+        <button onclick="dequeueCircular()">Dequeue</button>
+        <button onclick="iterateCircular()">Iterar</button>
+        <button onclick="resetCircular()">Reset</button>
       </div>
+      <p class="msg" id="msgCircular"></p>
     </div>
 
-    <footer>
-      <p>Pila y Cola interactiva con manejo de errores y recorrido.</p>
-    </footer>
+    <!-- Cola Doble -->
+    <div class="queue-card doble">
+      <h2>Cola Doble (Deque)</h2>
+      <div class="queue-container" id="queueDoble"></div>
+      <div class="controls">
+        <input type="text" id="inputDoble" placeholder="Valor" maxlength="2">
+        <button onclick="enqueueFront()">Enqueue Frente</button>
+        <button onclick="enqueueBack()">Enqueue Final</button>
+        <button onclick="dequeueFront()">Dequeue Frente</button>
+        <button onclick="dequeueBack()">Dequeue Final</button>
+        <button onclick="iterateDoble()">Iterar</button>
+        <button onclick="resetDoble()">Reset</button>
+      </div>
+      <p class="msg" id="msgDoble"></p>
+    </div>
 
   </div>
 
-  <script src="script.js"></script>
+<script>
+  // ======== COLA SIMPLE ========
+  const size = 5;
+  let simpleQueue = [];
+  const simpleCont = document.getElementById('queueSimple');
+  const msgSimple = document.getElementById('msgSimple');
+
+  function renderSimple() {
+    simpleCont.innerHTML = '';
+    simpleQueue.forEach(v => {
+      const div = document.createElement('div');
+      div.className = 'queue-element';
+      div.textContent = v;
+      simpleCont.appendChild(div);
+    });
+  }
+
+  function enqueueSimple() {
+    const v = document.getElementById('inputSimple').value.trim();
+    if (!v) return msgSimple.textContent = 'Ingresa un valor';
+    if (simpleQueue.length >= size) return msgSimple.textContent = 'Overflow: cola llena';
+    simpleQueue.push(v);
+    msgSimple.textContent = `Enqueued ${v}`;
+    renderSimple();
+  }
+
+  function dequeueSimple() {
+    if (simpleQueue.length === 0) return msgSimple.textContent = 'Underflow: cola vacía';
+    const val = simpleQueue.shift();
+    msgSimple.textContent = `Dequeued ${val}`;
+    renderSimple();
+  }
+
+  function iterateSimple() {
+    if (simpleQueue.length === 0) return msgSimple.textContent = 'Vacía';
+    msgSimple.textContent = 'Iterando...';
+    let delay = 0;
+    simpleQueue.forEach((_, i) => {
+      setTimeout(() => {
+        simpleCont.children[i].classList.add('active');
+      }, delay);
+      setTimeout(() => {
+        simpleCont.children[i].classList.remove('active');
+      }, delay + 600);
+      delay += 700;
+    });
+  }
+
+  function resetSimple() {
+    simpleQueue = [];
+    msgSimple.textContent = 'Reiniciada';
+    renderSimple();
+  }
+
+  // ======== COLA CIRCULAR ========
+  let circQueue = new Array(size).fill(null);
+  let front = -1, rear = -1;
+  const circCont = document.getElementById('queueCircular');
+  const msgCirc = document.getElementById('msgCircular');
+
+  function renderCircular() {
+    circCont.innerHTML = '';
+    circQueue.forEach(v => {
+      const div = document.createElement('div');
+      div.className = 'queue-element';
+      if (v !== null) div.textContent = v;
+      circCont.appendChild(div);
+    });
+  }
+
+  function enqueueCircular() {
+    const v = document.getElementById('inputCircular').value.trim();
+    if (!v) return msgCirc.textContent = 'Ingresa un valor';
+    if ((front === 0 && rear === size - 1) || (rear + 1) % size === front)
+      return msgCirc.textContent = 'Overflow: llena';
+
+    if (front === -1) front = rear = 0;
+    else rear = (rear + 1) % size;
+
+    circQueue[rear] = v;
+    msgCirc.textContent = `Enqueued ${v}`;
+    renderCircular();
+  }
+
+  function dequeueCircular() {
+    if (front === -1) return msgCirc.textContent = 'Underflow: vacía';
+    const val = circQueue[front];
+    circQueue[front] = null;
+
+    if (front === rear) front = rear = -1;
+    else front = (front + 1) % size;
+
+    msgCirc.textContent = `Dequeued ${val}`;
+    renderCircular();
+  }
+
+  function iterateCircular() {
+    if (front === -1) return msgCirc.textContent = 'Vacía';
+    msgCirc.textContent = 'Iterando...';
+    let i = front, delay = 0;
+    while (true) {
+      const idx = i;
+      setTimeout(() => {
+        circCont.children[idx].classList.add('active');
+      }, delay);
+      setTimeout(() => {
+        circCont.children[idx].classList.remove('active');
+      }, delay + 600);
+      if (i === rear) break;
+      i = (i + 1) % size;
+      delay += 700;
+    }
+  }
+
+  function resetCircular() {
+    circQueue.fill(null);
+    front = rear = -1;
+    msgCirc.textContent = 'Reiniciada';
+    renderCircular();
+  }
+
+  // ======== COLA DOBLE ========
+  let dobleQueue = [];
+  const dobleCont = document.getElementById('queueDoble');
+  const msgDoble = document.getElementById('msgDoble');
+
+  function renderDoble() {
+    dobleCont.innerHTML = '';
+    dobleQueue.forEach(v => {
+      const div = document.createElement('div');
+      div.className = 'queue-element';
+      div.textContent = v;
+      dobleCont.appendChild(div);
+    });
+  }
+
+  function enqueueFront() {
+    const v = document.getElementById('inputDoble').value.trim();
+    if (!v) return msgDoble.textContent = 'Ingresa un valor';
+    if (dobleQueue.length >= size) return msgDoble.textContent = 'Overflow: llena';
+    dobleQueue.unshift(v);
+    msgDoble.textContent = `Enqueued frente ${v}`;
+    renderDoble();
+  }
+
+  function enqueueBack() {
+    const v = document.getElementById('inputDoble').value.trim();
+    if (!v) return msgDoble.textContent = 'Ingresa un valor';
+    if (dobleQueue.length >= size) return msgDoble.textContent = 'Overflow: llena';
+    dobleQueue.push(v);
+    msgDoble.textContent = `Enqueued final ${v}`;
+    renderDoble();
+  }
+
+  function dequeueFront() {
+    if (dobleQueue.length === 0) return msgDoble.textContent = 'Vacía';
+    const val = dobleQueue.shift();
+    msgDoble.textContent = `Dequeued frente ${val}`;
+    renderDoble();
+  }
+
+  function dequeueBack() {
+    if (dobleQueue.length === 0) return msgDoble.textContent = 'Vacía';
+    const val = dobleQueue.pop();
+    msgDoble.textContent = `Dequeued final ${val}`;
+    renderDoble();
+  }
+
+  function iterateDoble() {
+    if (dobleQueue.length === 0) return msgDoble.textContent = 'Vacía';
+    msgDoble.textContent = 'Iterando...';
+    let delay = 0;
+    dobleQueue.forEach((_, i) => {
+      setTimeout(() => {
+        dobleCont.children[i].classList.add('active');
+      }, delay);
+      setTimeout(() => {
+        dobleCont.children[i].classList.remove('active');
+      }, delay + 600);
+      delay += 700;
+    });
+  }
+
+  function resetDoble() {
+    dobleQueue = [];
+    msgDoble.textContent = 'Reiniciada';
+    renderDoble();
+  }
+
+  // Render inicial
+  renderSimple();
+  renderCircular();
+  renderDoble();
+</script>
 </body>
 </html>
